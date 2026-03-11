@@ -131,6 +131,7 @@ const manipularDados = function(){
 }
 
 const removerItem = function(nomeAluno){
+
     let cont = 0
     let qted = listaDeAlunos.length
 
@@ -149,7 +150,10 @@ const removerItem = function(nomeAluno){
         }
     }
 }
+
+
 }
+
 
 console.table(listaDeAlunos)
 
