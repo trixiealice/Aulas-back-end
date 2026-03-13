@@ -173,11 +173,118 @@ const manipularDadosJSON = function (){
 
 }
 
-// exibirDados()
+const cadastroDeProdutos = function(){
+    let cores =  [
+                     {"id":1, "cor":"Branco",    "hexa": "#ffffff"}, //0
+                     {"id":2, "cor":"Preto",     "hexa": "#000000"}, //1
+                     {"id":3, "cor":"Azul",      "hexa": "#0000ff"}, //2
+                     {"id":4, "cor":"Amarelo",   "hexa": "#000000"}, //3
+                     {"id":5, "cor":"Rosa",      "hexa": "#000000"}  //4
+                 ]
+     console.log(cores)
+     console.table(cores)
+ 
+     let cont = 0
+     let qtde = cores.length
+ 
+     while(cont < qtde){
+         console.log(cores[cont].cor)
+         cont++
+     }
+     
+     console.log("*******************************************************")
+     cores.forEach(function(itemCor){
+         console.log(itemCor.cor)
+     })
+ 
+     let marcas = [
+             {"id":1, "marca":"Logitech",    "telefone":"12345678", "email":"logitech@gmail.com"},
+             {"id":2, "marca":"Dell",        "telefone":"23647242", "email": "dell@gmail.com"},
+             {"id":3, "marca":"Redragon",    "telefone":"34957493", "email": "redragon@gmail.com"},
+             {"id":4, "marca":"Multilaser",  "telefone":"48347834", "email": "multilaser@gmail.com"},
+             {"id":5, "marca":"Razer",       "telefone":"93947634", "email": "razer@gmail.com"},
+             {"id":6, "marca":"HyperX",      "telefone":"13847349", "email": "hyperx@gmail.com"}
+     ]
+ 
+     let produtos = [
+         {   "id":1, 
+             "nome":
+             "monitor",
+             "descricao":"Monitor de 27 Polegadas",
+             "valor":1500,
+             "qtde":20,
+             "cor": [
+                 cores[0], 
+                 cores[1]
+             ],
+             "marca":[
+                 marcas[1].marca
+             ]
+         },
+ 
+         {
+            "id":2, 
+             "nome":
+             "teclado",
+             "descricao":"Teclado Mecânico RGB",
+             "valor":250,
+             "qtde":500,
+             "cor": cores,
+             "marca":[
+                 marcas[3].marca,
+                 marcas[5].marca,
+                 marcas[1].marca,
+                 marcas[2].marca
+             ] 
+         },
+ 
+         {
+             "id":3, 
+             "nome":
+             "mouse",
+             "descricao":"Mouse sem fio",
+             "valor":80,
+             "qtde":160,
+             "cor": [
+                 cores[4].cor,
+                 cores[1].cor,
+                 cores[0].cor
+             ],
+             "marca":[
+                 marcas[0].marca,
+                 marcas[1].marca,
+                 marcas[2].marca,
+                 marcas[3].marca
+             ] 
+         }
+     ]
+     console.table(produtos)
+ 
+     //Exibindo todas as cores referente ao produto "MONITOR"
+     produtos[0].cor.forEach(function(itemProduto){
+         console.log(itemProduto.cor)
+     })
+     // console.log(produtos[0].cor)
+ 
+     console.table(produtos)
+ }
+ 
+ produtos.forEach(function(itemProduto){
+    console.log(`Produto: ${itemProduto.nome}`) 
 
-console.table(listaDeAlunos)
+    itemProduto.cor.forEach(function(itemCor){
+        console.log(`   Cor: ${itemCor.cor ? itemCor.cor : itemCor}`)
+    })
 
-// manipularDados()
-removerNome('José')
-console.table(listaDeAlunos)
-manipularDadosJSON()
+    itemProduto.marca.forEach(function(itemMarca){
+        console.log(`   Marca: ${itemMarca}`)
+    })
+})
+
+ //exibirDados()
+ console.table(listaDeAlunos)
+ // manipularDados()
+ removerNome('José')
+ console.table(listaDeAlunos)
+ manipularDadosJSON()
+ cadastroDeProdutos()
