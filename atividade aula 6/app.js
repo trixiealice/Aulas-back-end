@@ -17,29 +17,40 @@
  * 
 ***************/
 
-//Import da depeências para criar a API
-const express = require("express")
-const cors = require("cors")
+//Import das dependencias para criar a API
+const express = require('express')
+const cors = require('cors')
 
-//Criando um objeto de expres para criar a API
+//Criando um objeto do express para criar a API
 const app = express()
 
-const corsOptions = {
-    origin: [""], //Configuração de origem da requisição (API ou Donínio)
-    methods: 'GET', //Configuração dos verbos que serão utilizados na API
-    allowedHeaders: [`content-type`, `Autorization`]
+//Configurações do cors da API
+const cosrsOptions = {
+    origin : ['*'],  //Configuração de origem da requisição (IP ou o dominio)
+    methods: 'GET', //Configuração dos metodos que serão utilizados na API
+    allowedHeaders: ['Content-type', 'Authorization']   //Configurações de permissoes
+                    //Tipode de dados   Autorização de acesso
 
 }
 
-//Aplica as configurações do CORS no app (EXPRESS)
-app.use(cors(corsOptions))
+//Aplica as configurações do cors no app (Express)
+app.use(cors(cosrsOptions))
 
-//import arquivo de funções
-const estadosCidades = require("./modulo/array_json.js")
+const estadosCidades = require('./modulo/array_json.js')
 
-app.get('/v1/senai/dadosestado/:uf', function(request, response){
-    console.log(request.params.uf)
+//endpoint para listar os estados (como detalhar a API na url /v1/senai/estados)
+app.get('/v1/senai/estados', function(request, response){
+    let estados = estadosCidades.getListaDeEstados()
+    if(estados){
+    response.json(estados)
+    response.status(200)} //requisição bem sucedida
+    else{
+        response.json({'message': "Algo deu errado"})
+        response.status(400)
+    }
 })
+
+
 
 app.get('/v1/senai/dados/estado/:uf', function(request, response){
     let sigla = request.params.uf
@@ -48,26 +59,95 @@ app.get('/v1/senai/dados/estado/:uf', function(request, response){
         response.json(estado)
         response.status(200)
     }else{
-        response.json({"message": "Nenhum estado foi encontrado."})
-        response.status(404)
+        response.json({'message': "Algo deu errado"})
+        response.status(400)
     }
 })
 
-//Endpoint para listar os estados
-app.get('/v1/senai/estados', function(request, response){
-    let estados = estadosCidades.getListaDeEstados()
-    response.json(estados)
-    response.status(200) //Requisição bem sucedida!!!
+app.get('/v1/senai/dados/capital/estado/:uf', function(request, response){
+    let sigla = request.params.uf
+    let capitalEstado = estadosCidades.getCapitalEstado(sigla)
+    if(capitalEstado){
+        response.json(capitalEstado)
+        response.status(200)
+    }else{
+        response.json({'message': "Algo deu errado"})
+        response.status(400)
+    }
 })
 
-app.get('/v1/senai/estado/capital:uf', function(request, response){
-    let 
-})
-app.get('/v1/senai/cidades', function(request, response){
-    response.json({"mesage": "Testando a API de cidades"})
-    response.status(200) //Requisição bem sucedida!!!
+app.get('/v1/senai/dados/estado/regiao/:uf', function(request, response){
+    let regiao = request.params.uf
+    let estadoRegiao = estadosCidades.getEstadoRegiao(regiao)
+    if(estadoRegiao){
+        response.json(estadoRegiao)
+        response.status(200)
+    }else{
+        response.json({'message': "Algo deu errado"})
+        response.status(400)
+    }
 })
 
-app.listen(8080, function(){
-    console.log("API aguardando novas requisições...")
+
+app.get('/v1/senai/dados/capitais/pais', function(request, response){
+    let capitalPais = estadosCidades.getCapitalPais()
+    if(capitalPais){
+    response.json(capitalPais)
+    response.status(200)} //requisição bem sucedida
+    else{response.json({'message': "Algo deu errado"})
+    response.status(400)}
+})
+
+
+app.get('/v1/senai/dados/cidades/:uf', function(request, response){
+    let sigla = request.params.uf
+    let cidade = estadosCidades.getCidades(sigla)
+    if(cidade){
+        response.json(cidade)
+        response.status(200)
+    }else{
+        response.json({"message" : 'Algo deu erado'})
+        response.status(400)
+    }
+})
+
+app.get('/v1/senai/help', function(request, response){
+    let docAPI = {
+        "api-description": "API para manipular dados de Estados e Cidades",
+        "date": "2026-02-24",
+        "development": "Alice Campos da Silva",
+        "version": 1.0,
+        "endpoints": [
+            {
+                "rota1"    : "v1/senai/estados",
+                "description"   :   "Retorna a lista de todos os estados"
+            },
+            {
+                "rota2"    : "v1/senai/dados/estados/sp",
+                "description"   :   "Retorna dados de um estado filtrando pela sigla"
+            },
+            {
+                "rota3"    : "v1/senai/dados/capital/estados/sp",
+                "description"   :   "Retorna dados da capital de um estado filtrando pela sigla"
+            },
+            {
+                "rota4"    : "v1/senai/dados/estados/regiao/sul",
+                "description"   :   "Retorna a lista doa estados filtrando pela região"
+            },
+            {
+                "rota5"    : "v1/senai/dados/estados/capitais/brasil",
+                "description"   :   "Retorna a lista de todos os estados que ja foram capitais do brasil"
+            },
+            {
+                "rota6"    : "v1/senai/dados/cidades/estados/sp",
+                "description"   :   "Retorna a lista de cidades filtrando pela sigla do estado"
+            }
+        ]
+    }
+})
+
+
+//Fazer o start na API(aguardando as requisições)
+app.listen(3030, function(){
+    console.log('API aguaradando novas requisições ...')
 })
