@@ -11,49 +11,43 @@ const configMessages = require('../modulo/configMessages.js')
 const filmeDAO = require ('../../model/DAO/filme/filme.js')
 
 //Função para inserir um novo filme
-const inserirNovoFilme = async function(filme) {
+const inserirNovoFilme = async function(filme, contentType) {
 
     //Cria uma cópia do JSON do arquivo de configuração de mensagem
     let custoMessage = JSON.parse(JSON.stringify(configMessages))
-    if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80){
-        custoMessage.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
 
-    }else if(filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined){
-        custoMessage.ERROR_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
+    try {
 
-    }else if(filme.capa == null || filme.capa == undefined || filme.capa > 255){
-        custoMessage.ERROR_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
+    if(String(contentType).toUpperCase() == 'APLICATION/JSON'){
+    //Chama a função para validar a entrada de dados do  filme
+    let validar = await validarDados(filme)
 
-    }else if(filme.data.lancamento == '' || filme.data.lancamento == null || filme.data.lancamento == undefined || filme.data.lancamento.length != 10){
-        custoMessage.ERROR_BAD_REQUEST.field = '[DATA DE LANÇAMEMTO] INVÁLIDO'
-
-    } else if(filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5){
-        custoMessage.ERROR_BAD_REQUEST.field = '[DURACÇÃO] INVÁLIDO'
-
-    }else if(filme.valor == undefined || isNaN(filme.valor) || filme.valor.length > 5){
-        custoMessage.ERROR_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
-
-    }else if(filme.avaliacao == undefined || isNaN(filme.avaliacao) || filme.avaliacao.length > 3 ){
-        custoMessage.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
-        
+    //Retorna um JSON de erro caso algum atributo seja invalido, se não retorna um false(não teve erro)
+    if(validar) {
+        return validar //400
     }else {
+
+        //Encaminha os dados do filme para o DAO inserir no Banco de Dados
         let result = await filmeDAO.insertFilme(filme)
+        
+        // console.log(result)
+            if(result){ //201
+                custoMessage.DEFAULT_MESSAGE.status = custoMessage.SUCESSES_CREATED_ITEM.status
+                custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.SUCESSES_CREATED_ITEM.status_code
+                custoMessage.DEFAULT_MESSAGE.message = custoMessage.SUCESSES_CREATED_ITEM.message
 
-        if(result){
-            custoMessage.DEFAULT_MESSAGE.status = custoMessage.SUCESSES_CREATED_ITEM.status
-            custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.SUCESSES_CREATED_ITEM.status_code
-            custoMessage.DEFAULT_MESSAGE.message = custoMessage.SUCESSES_CREATED_ITEM.message
-
-        }else {
-            custoMessage.DEFAULT_MESSAGE.status = custoMessage.ERROR_INTERNAL_SERVER_MODEL.status
-            custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.ERROR_INTERNAL_SERVER_MODEL.status_code
-            custoMessage.DEFAULT_MESSAGE.message = custoMessage.ERROR_INTERNAL_SERVER_MODEL.message
-
+                return custoMessage.DEFAULT_MESSAGE //201
+            }else { //erro 500 (Model)
+                return custoMessage.ERROR_INTERNAL_SERVER_MODEL //500
+            }
         }
-
-        return custoMessage.DEFAULT_MESSAGE
+    }else{
+        return custoMessage.ERROR_CONTENT_TYPE
     }
-    
+
+        } catch (error) {
+           return custoMessage.ERROR_INTERNAL_SERVER_CONTROLLER
+        }
 }
 
 //Função pra atualizar um filme existente
@@ -74,6 +68,42 @@ const buscarFilme = async function() {
 //Função para excluir um filme
 const excluirFilme = async function() {
     
+}
+
+//Cria uma cópia do JSON do arquivo de configuração de mensagem
+let custoMessage = JSON.parse(JSON.stringify(configMessages))
+
+const validarDados = async function(filme) {
+    if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80){
+        custoMessage.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    }else if(filme.sinopse == '' || filme.sinopse == null || filme.sinopse == undefined){
+        custoMessage.ERROR_BAD_REQUEST.field = '[SINOPSE] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    }else if(filme.capa == null || filme.capa == undefined || filme.capa > 255){
+        custoMessage.ERROR_BAD_REQUEST.field = '[CAPA] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    }else if(filme.data_lancamento == '' || filme.data_lancamento == null || filme.data_lancamento == undefined || filme.data_lancamento.length != 10){
+        custoMessage.ERROR_BAD_REQUEST.field = '[DATA DE LANÇAMEMTO] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    } else if(filme.duracao == '' || filme.duracao == null || filme.duracao == undefined || filme.duracao.length < 5){
+        custoMessage.ERROR_BAD_REQUEST.field = '[DURACÇÃO] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    }else if(filme.valor == undefined || isNaN(filme.valor) || filme.valor.length > 5){
+        custoMessage.ERROR_BAD_REQUEST.field = '[VALOR] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+
+    }else if(filme.avaliacao == undefined || isNaN(filme.avaliacao) || filme.avaliacao.length > 3 ){
+        custoMessage.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+    }else{
+        return false 
+    }
 }
 
 module.exports = {
