@@ -33,7 +33,6 @@ const insertFilme = async function(filme){
     '${filme.data_lancamento}',
     '${filme.duracao}',
     '${filme.valor}',
-    '${filme.avaliacao}',
     if ('${filme.avaliacao}' = '', null, '${filme.avaliacao}')
 );`
 
@@ -61,14 +60,46 @@ const updateFilme = async function() {
 }
 
 //Função para retornar todos os dados de filme do banco de dados
-const selectAllFIne = async function (filme) {
-    
+const selectAllFilme = async function (filme) {
+    try {
+
+        //Script sql para listar todos os filmes
+        let sql = 'select * from tbl_filme order by id desc'
+
+        //execurta no banco de dados e script  eguarda o retorno do banco, pode ser um ERRO (false) ou um ARRAY com os dados
+        let result = await knexConection.raw(sql)
+
+        //Validação para verificar se o retorno do banco de dados é ARRAY ou um boolean(false)
+        if(Array.isArray(result)){
+            return result[0] //Retorna somente o indice com a lista de filmes
+        }else {
+            return false
+        }
+    } catch (error) {
+        return false
+        
+    }
 }
+
+selectAllFilme()
 
 //Função para retornar um filme filtrando pelo ID
-const selectByFilme = async function(id){
+const selectByIdFilme = async function(id){
 
-}
+    try {
+        let sql = `select * from tbl_filme where id = ${id}`
+
+        let result = await knexConection.raw(sql)
+
+        if(Array.isArray(result)){
+            return result[0]
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+    }
 
 //Função para excluir um filme filtrando pelo ID 
 const deleteFilme = async function(id){
@@ -78,7 +109,7 @@ const deleteFilme = async function(id){
 module.exports = {
     insertFilme,
     updateFilme,
-    selectAllFIne,
-    selectByFilme,
+    selectAllFilme,
+    selectByIdFilme,
     deleteFilme,
 }

@@ -38,6 +38,23 @@ app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, res
     response.json(result)
 })
 
+app.get('/v1/senai/locadora/filme', async function(request, response){
+
+    let result = await controllerFilme.listarFilme()
+
+    console.log(result)
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.get('/v1/senai/locadora/fime/:id', async function (request, response) {
+    //Recebe o ID do filme via parametro
+    let id = request.params.id
+
+    let result = await controllerFilme.buscarFilme(id)
+    response.status(result.status_code)
+    response.json(result)
+})
 
 //Fazer o start na API(aguardando as requisições)
 app.listen(3030, function(){

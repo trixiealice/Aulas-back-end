@@ -32,9 +32,9 @@ const inserirNovoFilme = async function(filme, contentType) {
         
         // console.log(result)
             if(result){ //201
-                custoMessage.DEFAULT_MESSAGE.status = custoMessage.SUCESSES_CREATED_ITEM.status
-                custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.SUCESSES_CREATED_ITEM.status_code
-                custoMessage.DEFAULT_MESSAGE.message = custoMessage.SUCESSES_CREATED_ITEM.message
+                custoMessage.DEFAULT_MESSAGE.status = custoMessage.SUCCESSES_CREATED_ITEM.status
+                custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.SUCCESSES_CREATED_ITEM.status_code
+                custoMessage.DEFAULT_MESSAGE.message = custoMessage.SUCCESSES_CREATED_ITEM.message
 
                 return custoMessage.DEFAULT_MESSAGE //201
             }else { //erro 500 (Model)
@@ -57,12 +57,73 @@ const atualizarFilme = async function() {
 
 //Função para retornar todos os filmes existentes
 const listarFilme = async function() {
-    
+    let custoMessage = JSON.parse(JSON.stringify(configMessages))
+
+    try {
+        //Chama a função DAO para retornar a lista de filmes do BD
+        let result = await filmeDAO.selectAllFilme()
+
+      
+        //Validação para verificar se o DAO conseguiu processar o script no BD
+        if(result){
+            //Valiação para verificar se o conteúdo do array tem dados de retorno ou se está vazio
+            if(result.length > 0){
+                custoMessage.DEFAULT_MESSAGE.status             = custoMessage.SUCCESSES_RESPONSE.status
+                custoMessage.DEFAULT_MESSAGE.status_code        = custoMessage.SUCCESSES_RESPONSE.
+                custoMessage. DEFAULT_MESSAGE.response.count    = result.length
+                custoMessage.DEFAULT_MESSAGE.response.filme     = result
+                
+                // console.log(custoMessage.DEFAULT_MESSAGE)
+
+                return custoMessage.DEFAULT_MESSAGE
+            }else{
+                return custoMessage.ERROR_NOT_FOUND //404
+            }
+        }else{
+            return custoMessage.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+        }
+
+    } catch (error) {
+        //console.log(error)
+        return custoMessage.ERROR_INTERNAL_SERVER_CONTROLLER //500 
+    }
 }
 
 //Função para retornar um filme filtrando pelo ID
-const buscarFilme = async function() {
-    
+const buscarFilme = async function(id) {
+    let custoMessage = JSON.parse(JSON.stringify(configMessages))
+
+    try {
+
+        //Validação para garanti que o ID seja um número válido
+        if(String(id).replaceAll('', ``) == '' || id == null || id == undefined || isNaN(id)){
+            custoMessage.ERROR_BAD_REQUEST.field == '[ID] INVÁLIDO'
+            return custoMessage.ERROR_BAD_REQUEST //400
+        }else{
+
+            //Chama a função do DAO para pesquisar o filme pelo iD
+            let result = await filmeDAO.selectByIdFilme(id)
+
+            //Validação para verificar se o DAO verificou dados ou FALSE(erro)
+            if(result){
+
+                //Validação para verificar se o DAO tem algum dado no Array
+                if(result.length > 0){
+                    custoMessage.DEFAULT_MESSAGE.status         = custoMessage.SUCCESSES_RESPONSE.status
+                    custoMessage.DEFAULT_MESSAGE.status_code    = custoMessage.SUCCESSES_RESPONSE.status_code
+                    custoMessage.DEFAULT_MESSAGE.response.filme = result
+
+                    return custoMessage.DEFAULT_MESSAGE //200
+                }else{
+                    return custoMessage.ERROR_NOT_FOUND //400
+                }
+            }else{
+                return custoMessage.ERROR_INTERNAL_SERVER_MODEL //500 (model)
+            }
+        }
+    } catch (error) {
+        return custoMessage.ERROR_INTERNAL_SERVER_CONTROLLER // (controler)
+    }
 }
 
 //Função para excluir um filme
@@ -70,10 +131,13 @@ const excluirFilme = async function() {
     
 }
 
-//Cria uma cópia do JSON do arquivo de configuração de mensagem
-let custoMessage = JSON.parse(JSON.stringify(configMessages))
+
 
 const validarDados = async function(filme) {
+
+    //Cria uma cópia do JSON do arquivo de configuração de mensagem
+    let custoMessage = JSON.parse(JSON.stringify(configMessages))
+
     if(filme.nome == '' || filme.nome == null || filme.nome == undefined || filme.nome.length > 80){
         custoMessage.ERROR_BAD_REQUEST.field = '[NOME] INVÁLIDO'
         return custoMessage.ERROR_BAD_REQUEST

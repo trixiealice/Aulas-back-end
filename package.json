@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "mysql2": "^3.22.1"
+  }
+}

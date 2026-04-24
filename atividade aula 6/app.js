@@ -20,6 +20,10 @@
 //Import das dependencias para criar a API
 const express = require('express')
 const cors = require('cors')
+const bodyParser = require('body-parser')
+
+//Permite a utilização no body 
+const bodyParserJSON = bodyParser.json()
 
 //Criando um objeto do express para criar a API
 const app = express()
@@ -49,8 +53,6 @@ app.get('/v1/senai/estados', function(request, response){
         response.status(400)
     }
 })
-
-
 
 app.get('/v1/senai/dados/estado/:uf', function(request, response){
     let sigla = request.params.uf
