@@ -44,4 +44,20 @@ insert into tbl_filme (
     if("", null, 2)
 );
 
+
+select *from tbl_filme;
 select *from tbl_filme order by id desc;
+select *from tbl_filme where id = 15;
+
+#Atualizar infromações de algo já cadastrado
+update tbl_filme set
+	nome = 'Filme 05',
+    sinopse = 'Testando atualização de filme',
+    capa = 'teste',
+    data_lancamento = '2026-04-29',
+    duracao = '02:30:00',
+    valor = '10',
+    avaliacao = '5'
+where id = 19;
+
+#delete from tbl_filme where id > 0
