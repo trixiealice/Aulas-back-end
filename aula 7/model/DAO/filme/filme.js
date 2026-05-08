@@ -119,7 +119,7 @@ const selectByIdFilme = async function(id){
     } catch (error) {
         return false
     }
-    }
+}
 
 //Função para excluir um filme filtrando pelo ID 
 const deleteFilme = async function(id){
