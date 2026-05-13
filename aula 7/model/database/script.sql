@@ -21,6 +21,7 @@ create table tbl_filme (
     avaliacao 			decimal (3,2) default null
 );
 
+
 # o drop apaga tudo
 #drop table tbl_filmes;
 
@@ -61,3 +62,33 @@ update tbl_filme set
 where id = 19;
 
 #delete from tbl_filme where id > 0
+
+
+#Tabela de gênero
+create table tbl_genero (
+	id			int not null auto_increment primary key,
+    nome		varchar(30) not null,
+    descricao	varchar(250) not null
+);
+
+insert into tbl_genero (
+			nome,
+            descricao
+) values(
+	'Animação',
+    'Filmes produzidos por meio de técnicas de desenho, computação gráfica ou stop-motion.'
+);
+
+select *from tbl_genero;
+select *from tbl_genero order by id desc;
+select *from tbl_genero where id = 1;
+
+update tbl_genero set 
+where id = 1;
+
+#delete from tbl_genero where id > 0
+
+
+
+
+

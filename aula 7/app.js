@@ -22,8 +22,9 @@ const cosrsOptions = {
 app.use(cors(cosrsOptions))
 
 const controllerFilme = require('./controller/filme/controller_filme.js')
+const controllerGenero = require('./controller/genero/controller_genero.js')
 
-//ENDPOINTS
+//ENDPOINTS filmes
 app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, response){
     //Recebendo o body da requisição
     let dados = request.body
@@ -86,3 +87,5 @@ app.delete('/v1/senai/location/filme/:id', async function(request, response) {
 app.listen(3030, function(){
     console.log('API aguaradando novas requisições ...')
 })
+
+//ENDPOINTS GENERO
