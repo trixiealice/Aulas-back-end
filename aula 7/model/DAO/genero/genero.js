@@ -4,30 +4,30 @@ const knexDatabaseConfig = require ('../../database_config/knexConfig.js')
 
 const knexConection = knex(knexDatabaseConfig.development)
 
-const insertGenero = async function(genero) {
+const insertGenero = async function(genero){
     try {
+
         let sql = `insert into tbl_genero (
+            nome,
+            descricao
+        ) values (
+            '${genero.nome}',
+            '${genero.descricao}'
+        );`
 
-                    nome,
-                    descricao
-    ) values (
-    '${genero.nome}',
-    '${genero.descricao}'
-    );`
+        let result = await knexConection.raw(sql)
 
-    let result = await knexConection.raw(sql)
-
-    if (result) {
-        return result[0].insertId
-    } else 
-        return false
+        if(result)
+            return result[0].insertId
+        else
+            return false
 
     } catch (error) {
         return false
     }
 }
 
-const selectAllGenero = async function(genero) {
+const selectAllGenero = async function() {
     try {
         let sql = 'select * from tbl_genero order id desc'
 
@@ -62,7 +62,7 @@ const updateGenero = async function(genero){
     }
 }
 
-const deleteGenero = async function (genero) {
+const deleteGenero = async function (id) {
     try {
         let sql = `delete from tbl_genero where id=${id}`
 
@@ -77,17 +77,17 @@ const deleteGenero = async function (genero) {
     }
 }
 
-const selectByIdGenero = async function (genero) {
+const selectByIdGenero = async function (id) {
     try {
         let sql = `select * from tbl_genero where id = ${id}`
 
         let result = await knexConection.raw(sql)
 
-        if (Array.isArray(result)) {
+        if (Array.isArray(result)) 
             return result[0]
-        } else {
+         else
             return false
-        }
+        
     } catch (error) {
         return false
     }

@@ -207,6 +207,8 @@ module.exports = {
     inserirNovoGenero,
     atualizarGenero,
     listarGenero,
+    buscarGenero,
     excluirGenero,
     validardados
 }
+
