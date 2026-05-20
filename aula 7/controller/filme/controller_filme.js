@@ -10,6 +10,9 @@ const configMessages = require('../modulo/configMessages.js')
 //Import do arquivo do DAO para manipular os dados do filme do Banco de Dados
 const filmeDAO = require ('../../model/DAO/filme/filme.js')
 
+//Import das Controllers
+const controllerClassificacao = require("../classificacao/controller.classificacao.js")
+
 //Função para inserir um novo filme
 const inserirNovoFilme = async function(filme, contentType) {
 
@@ -116,6 +119,22 @@ const listarFilme = async function() {
         if(result){
             //Valiação para verificar se o conteúdo do array tem dados de retorno ou se está vazio
             if(result.length > 0){
+
+                //Manipulação dos dados de Classificação
+                //Percorre o array de filmes
+                for (filme of result){
+                    //Busca na conytroller da classificação o ID refrerente a FC da classificação
+                    let resultClassificacao = await controllerClassificacao.buscarClassificacao(filme.id_classificacao)
+
+                    //Se encontrar o ID
+                    if(resultClassificacao.status){
+                        //Adiciona um atributo classificação no JSON de filme e colocar o resultado com os dados de classficação
+                        filme.classificacao = resultClassificacao.response.classificacao
+                        //Apaga o id_classificação do JSON de filme
+                        delete filme.id_classificacao
+                    }
+                }
+
                 custoMessage.DEFAULT_MESSAGE.status             = custoMessage.SUCCESSES_RESPONSE.status
                 custoMessage.DEFAULT_MESSAGE.status_code        = custoMessage.SUCCESSES_RESPONSE.status_code
                 custoMessage. DEFAULT_MESSAGE.response.count    = result.length
@@ -235,8 +254,12 @@ const validarDados = async function(filme) {
     }else if(filme.avaliacao == undefined || isNaN(filme.avaliacao) || filme.avaliacao.length > 3 ){
         custoMessage.ERROR_BAD_REQUEST.field = '[AVALIAÇÃO] INVÁLIDO'
         return custoMessage.ERROR_BAD_REQUEST
-    }else{
-        return false 
+    
+    }else if(filme.id_classificacao == undefined || filme.id_classificacao == null || isNaN(filme.id_classificacao) || filme.id_classificacao <= 0) {
+        custoMessage.ERROR_BAD_REQUEST.field = '[ID_CLASSIFICACAO] INVÁLIDO'
+        return custoMessage.ERROR_BAD_REQUEST
+    } else{
+        return false
     }
 }
 

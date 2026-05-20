@@ -143,3 +143,65 @@ app.delete('/v1/senai/locadora/genero/:id', async function(request, response){
     response.status(result.status_code)
     response.json(result)
 })
+
+//ENDPOINTS CLASSIFICAÇÃO
+app.post('/v1/senai/locadora/classificacao', bodyParserJSON, async function(request, response){
+
+    let dados = request.body
+
+    let contentType = request.headers['content-type']
+
+    let result = await controllerClassificacao.inserirNovaClassificacao(dados, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.get('/v1/senai/locadora/classificacao', async function(request, response){
+
+    let result = await controllerClassificacao.listarClassificacao()
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.get('/v1/senai/locadora/classificacao/:id', async function(request, response){
+
+    let id = request.params.id
+
+    let result = await controllerClassificacao.buscarClassificacao(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.put('/v1/senai/locadora/classificacao/:id', bodyParserJSON, async function(request, response){
+
+    let contentType = request.headers['content-type']
+
+    let id = request.params.id
+
+    let dados = request.body
+
+    let result = await controllerClassificacao.atualizarClassificacao(dados, id, contentType)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+app.delete('/v1/senai/locadora/classificacao/:id', async function(request, response){
+
+    let id = request.params.id
+
+    let result = await controllerClassificacao.excluirClassificacao(id)
+
+    response.status(result.status_code)
+    response.json(result)
+})
+
+
+//Fazer o start na API
+app.listen(3030, function(){
+    console.log('API aguardando novas requisições...')
+})
+
