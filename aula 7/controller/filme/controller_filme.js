@@ -12,6 +12,7 @@ const filmeDAO = require ('../../model/DAO/filme/filme.js')
 
 //Import das Controllers
 const controllerClassificacao = require("../classificacao/controller.classificacao.js")
+const controllerFilmeGenero = require("../classificacao/controller_filme_genero.js")
 
 //Função para inserir um novo filme
 const inserirNovoFilme = async function(filme, contentType) {
@@ -38,6 +39,17 @@ const inserirNovoFilme = async function(filme, contentType) {
 
                 //Cria o ID no JSON do filme e adicona o Id gerado no DAO
                 filme.id = result
+
+                //Percorre o array de generos que chegará na requisição pelo objeto filme
+                //Manipulação de dados para Inserir os Generos relacionados ao filme
+                for(itemFilme of filme.genero){
+                let genero = {
+                                "id_filme": filme.id,
+                                "id_genero": itemFilme.id
+                }
+
+                let resultFilmeGenero = await controllerFilmeGenero.inserirNovoFilmeGenero(filme)
+            }
                 custoMessage.DEFAULT_MESSAGE.status = custoMessage.SUCCESSES_CREATED_ITEM.status
                 custoMessage.DEFAULT_MESSAGE.status_code = custoMessage.SUCCESSES_CREATED_ITEM.status_code
                 custoMessage.DEFAULT_MESSAGE.message = custoMessage.SUCCESSES_CREATED_ITEM.message
