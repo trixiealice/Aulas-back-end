@@ -34,7 +34,8 @@ app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, res
 
     //Chama a função de inserir e encaminha os dados do filme e o contentType
     let result = await controllerFilme.inserirNovoFilme(dados, contentType)
-
+    // console.log(result);
+    
     response.status(result.status_code)
     response.json(result)
 })
@@ -43,7 +44,7 @@ app.get('/v1/senai/locadora/filme', async function(request, response){
 
     let result = await controllerFilme.listarFilme()
 
-    console.log(result)
+    // console.log(result)
     response.status(result.status_code)
     response.json(result)
 })
