@@ -22,7 +22,6 @@ const cosrsOptions = {
 app.use(cors(cosrsOptions))
 
 const controllerFilme = require('./controller/filme/controller_filme.js')
-const controllerGenero = require('./controller/genero/controller_genero.js')
 
 //ENDPOINTS filmes
 app.post('/v1/senai/locadora/filme', bodyParserJSON, async function(request, response){
@@ -89,61 +88,7 @@ app.listen(3030, function(){
     console.log('API aguaradando novas requisições ...')
 })
 
-//ENDPOINTS GENERO
 
-app.post('/v1/senai/locadora/genero', bodyParserJSON, async function(request, response){
-
-    let dados = request.body
-
-    let contentType = request.headers['content-type']
-
-    let result = await controllerGenero.inserirNovoGenero(dados, contentType)
-
-    response.status(result.status_code)
-    response.json(result)
-})
-
-app.get('/v1/senai/locadora/genero', async function(request, response){
-
-    let result = await controllerGenero.listarGenero()
-
-    response.status(result.status_code)
-    response.json(result)
-})
-
-app.get('/v1/senai/locadora/genero/:id', async function(request, response){
-
-    let id = request.params.id
-
-    let result = await controllerGenero.buscarGenero(id)
-
-    response.status(result.status_code)
-    response.json(result)
-})
-
-app.put('/v1/senai/locadora/genero/:id', bodyParserJSON, async function(request, response){
-
-    let contentType = request.headers['content-type']
-
-    let id = request.params.id
-
-    let dados = request.body
-
-    let result = await controllerGenero.atualizarGenero(dados, id, contentType)
-
-    response.status(result.status_code)
-    response.json(result)
-})
-
-app.delete('/v1/senai/locadora/genero/:id', async function(request, response){
-
-    let id = request.params.id
-
-    let result = await controllerGenero.excluirGenero(id)
-
-    response.status(result.status_code)
-    response.json(result)
-})
 
 //ENDPOINTS CLASSIFICAÇÃO
 app.post('/v1/senai/locadora/classificacao', bodyParserJSON, async function(request, response){
@@ -199,6 +144,10 @@ app.delete('/v1/senai/locadora/classificacao/:id', async function(request, respo
     response.status(result.status_code)
     response.json(result)
 })
+
+//Import do arquivo de rotas do Genero
+const generorouter = require('./routes/genero.router.js')
+app.use('/v1/senai/locadora/genero', cors(), generorouter)
 
 
 //Fazer o start na API
